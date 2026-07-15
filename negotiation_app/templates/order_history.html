@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}My Order History - NegotioCart{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3 class="fw-bold text-dark mb-4"><i class="fa-solid fa-clock-rotate-left text-info me-2"></i>My Order History</h3>
+    
+    {% if orders %}
+        <div class="row g-4">
+            {% for order in orders %}
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-3">
+                        <div class="card-header bg-light py-3 d-flex flex-wrap justify-content-between align-items-center border-bottom">
+                            <div class="d-flex gap-4">
+                                <div>
+                                    <span class="text-secondary small d-block text-uppercase">Order Placed</span>
+                                    <span class="fw-semibold text-dark">{{ order.created_at|date:"F d, Y" }}</span>
+                                </div>
+                                <div>
+                                    <span class="text-secondary small d-block text-uppercase">Total Amount</span>
+                                    <span class="fw-bold text-info">${{ order.total_amount }}</span>
+                                </div>
+                                <div>
+                                    <span class="text-secondary small d-block text-uppercase">Order ID</span>
+                                    <span class="fw-semibold text-dark">#{{ order.id }}</span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="badge bg-success px-3 py-2 rounded-pill"><i class="fa-solid fa-circle-check me-1"></i>{{ order.status }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body p-4">
+                            <div class="table-responsive">
+                                <table class="table table-borderless align-middle mb-0">
+                                    <tbody>
+                                        {% for item in order.items.all %}
+                                            <tr>
+                                                <td style="width: 80px;">
+                                                    <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" class="rounded-3" style="width: 70px; height: 50px; object-fit: cover;">
+                                                </td>
+                                                <td>
+                                                    <h6 class="mb-0 fw-bold">{{ item.product.name }}</h6>
+                                                    <small class="text-muted">Category: {{ item.product.category.name }}</small>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="text-secondary small d-block">Quantity</span>
+                                                    <span class="fw-semibold text-dark">x{{ item.quantity }}</span>
+                                                </td>
+                                                <td class="text-end">
+                                                    <span class="text-secondary small d-block">Unit Price</span>
+                                                    <span class="fw-bold text-dark">${{ item.price }}</span>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5 mt-4 card border-0 shadow-sm rounded-4">
+            <div class="card-body">
+                <i class="fa-solid fa-folder-open text-secondary fs-1 mb-3"></i>
+                <h4 class="fw-bold">No Orders Placed Yet</h4>
+                <p class="text-muted">You haven't purchased anything yet. Let's make some deals!</p>
+                <a href="{% url 'home' %}" class="btn btn-info text-white rounded-pill px-4 mt-2">Start Shopping</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

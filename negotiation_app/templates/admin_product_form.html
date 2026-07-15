@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Product - Admin Console{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        
+        <!-- Sidebar Navigation -->
+        <div class="col-md-2 p-0 admin-sidebar rounded-4 overflow-hidden mb-4 mb-md-0">
+            <div class="py-3 px-4 border-bottom border-secondary">
+                <span class="fw-bold text-info"><i class="fa-solid fa-lock-open me-2"></i>Admin Console</span>
+            </div>
+            <a href="{% url 'admin_dashboard' %}" class="active"><i class="fa-solid fa-box me-2"></i>Products</a>
+            <a href="{% url 'admin_categories' %}"><i class="fa-solid fa-list me-2"></i>Categories</a>
+            <a href="{% url 'admin_orders' %}"><i class="fa-solid fa-receipt me-2"></i>Orders</a>
+            <a href="{% url 'admin_negotiations' %}"><i class="fa-solid fa-comments-dollar me-2"></i>Negotiations</a>
+        </div>
+        
+        <!-- Form Content -->
+        <div class="col-md-10 px-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 mt-2">
+                <h3 class="fw-bold text-dark mb-4">{{ action }} Product</h3>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label fw-semibold text-secondary">Product Name</label>
+                            <input type="text" name="name" id="name" class="form-control rounded-3" value="{{ product.name|default:'' }}" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="category" class="form-label fw-semibold text-secondary">Category</label>
+                            <select name="category" id="category" class="form-select rounded-3" required>
+                                <option value="" disabled {% if not product %}selected{% endif %}>Select Category</option>
+                                {% for cat in categories %}
+                                    <option value="{{ cat.id }}" {% if product.category.id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-12">
+                            <label for="description" class="form-label fw-semibold text-secondary">Description</label>
+                            <textarea name="description" id="description" class="form-control rounded-3" rows="4" required>{{ product.description|default:'' }}</textarea>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label for="price" class="form-label fw-semibold text-secondary">Base Price ($)</label>
+                            <input type="number" name="price" id="price" class="form-control rounded-3" step="0.01" value="{{ product.price|default:'' }}" required>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label for="min_negotiation_price" class="form-label fw-semibold text-secondary">Min Negotiation Price ($)</label>
+                            <input type="number" name="min_negotiation_price" id="min_negotiation_price" class="form-control rounded-3" step="0.01" value="{{ product.min_negotiation_price|default:'' }}" required>
+                            <div class="form-text" style="font-size: 0.75rem;">Secret threshold price bot will accept.</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="image_url" class="form-label fw-semibold text-secondary">Product Image URL</label>
+                            <input type="url" name="image_url" id="image_url" class="form-control rounded-3" value="{{ product.image_url|default:'' }}" placeholder="https://via.placeholder.com/300x200">
+                        </div>
+                        
+                        <div class="col-12 my-3">
+                            <div class="form-check form-switch bg-light p-3 rounded-3 border">
+                                <input class="form-check-input ms-0 me-2" type="checkbox" name="is_offer" id="is_offer" {% if product.is_offer %}checked{% endif %}>
+                                <label class="form-check-label fw-semibold text-dark" for="is_offer">Set as Promotional Offer (Non-Negotiable)</label>
+                                <div class="form-text mt-1 text-muted" style="font-size: 0.8rem;">If checked, the chatbot negotiation will be locked for this product.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-success rounded-pill px-4 fw-semibold">Save Product</button>
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

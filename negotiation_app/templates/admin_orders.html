@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Manage Orders - Admin Console{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        
+        <!-- Sidebar Navigation -->
+        <div class="col-md-2 p-0 admin-sidebar rounded-4 overflow-hidden mb-4 mb-md-0">
+            <div class="py-3 px-4 border-bottom border-secondary">
+                <span class="fw-bold text-info"><i class="fa-solid fa-lock-open me-2"></i>Admin Console</span>
+            </div>
+            <a href="{% url 'admin_dashboard' %}"><i class="fa-solid fa-box me-2"></i>Products</a>
+            <a href="{% url 'admin_categories' %}"><i class="fa-solid fa-list me-2"></i>Categories</a>
+            <a href="{% url 'admin_orders' %}" class="active"><i class="fa-solid fa-receipt me-2"></i>Orders</a>
+            <a href="{% url 'admin_negotiations' %}"><i class="fa-solid fa-comments-dollar me-2"></i>Negotiations</a>
+        </div>
+        
+        <!-- Orders Content -->
+        <div class="col-md-10 px-md-4">
+            <h3 class="fw-bold text-dark mb-4">Customer Orders</h3>
+            
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="text-secondary small text-uppercase">
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Items Ordered</th>
+                                <th>Total Paid</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                                <tr>
+                                    <td><span class="fw-bold text-dark">#{{ order.id }}</span></td>
+                                    <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                                    <td>
+                                        <div class="fw-semibold text-dark"><i class="fa-solid fa-user-tag me-1 text-muted"></i>{{ order.user.username }}</div>
+                                        <small class="text-muted">{{ order.user.email }}</small>
+                                    </td>
+                                    <td>
+                                        <ul class="list-unstyled mb-0" style="font-size: 0.85rem;">
+                                            {% for item in order.items.all %}
+                                                <li>{{ item.product.name }} <strong class="text-dark">x{{ item.quantity }}</strong> @ ${{ item.price }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                                    <td><span class="fw-bold text-info">${{ order.total_amount }}</span></td>
+                                    <td>
+                                        <span class="badge bg-success rounded-pill px-3 py-2"><i class="fa-solid fa-circle-check me-1"></i>{{ order.status }}</span>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-muted">No customer orders have been placed yet.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

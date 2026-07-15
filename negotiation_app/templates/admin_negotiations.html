@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}Negotiation Log - Admin Console{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        
+        <!-- Sidebar Navigation -->
+        <div class="col-md-2 p-0 admin-sidebar rounded-4 overflow-hidden mb-4 mb-md-0">
+            <div class="py-3 px-4 border-bottom border-secondary">
+                <span class="fw-bold text-info"><i class="fa-solid fa-lock-open me-2"></i>Admin Console</span>
+            </div>
+            <a href="{% url 'admin_dashboard' %}"><i class="fa-solid fa-box me-2"></i>Products</a>
+            <a href="{% url 'admin_categories' %}"><i class="fa-solid fa-list me-2"></i>Categories</a>
+            <a href="{% url 'admin_orders' %}"><i class="fa-solid fa-receipt me-2"></i>Orders</a>
+            <a href="{% url 'admin_negotiations' %}" class="active"><i class="fa-solid fa-comments-dollar me-2"></i>Negotiations</a>
+        </div>
+        
+        <!-- Negotiations Content -->
+        <div class="col-md-10 px-md-4">
+            <h3 class="fw-bold text-dark mb-4">Chatbot Negotiation History Log</h3>
+            
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="text-secondary small text-uppercase">
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Customer</th>
+                                <th>Product Details</th>
+                                <th>Proposed Offer</th>
+                                <th>Result</th>
+                                <th>Chatbot Reply Text</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in negotiations %}
+                                <tr>
+                                    <td class="small">{{ log.created_at|date:"Y-m-d H:i" }}</td>
+                                    <td><span class="fw-semibold text-dark"><i class="fa-solid fa-user me-1 text-muted"></i>{{ log.user.username }}</span></td>
+                                    <td>
+                                        <div class="fw-bold text-dark">{{ log.product.name }}</div>
+                                        <small class="text-muted">Retail: ${{ log.product.price }} | Min Limit: ${{ log.product.min_negotiation_price }}</small>
+                                    </td>
+                                    <td><span class="fw-semibold text-dark">${{ log.offered_price }}</span></td>
+                                    <td>
+                                        {% if log.status == 'Accepted' %}
+                                            <span class="badge bg-success rounded-pill px-3 py-1.5"><i class="fa-solid fa-circle-check me-1"></i>Accepted</span>
+                                        {% else %}
+                                            <span class="badge bg-danger rounded-pill px-3 py-1.5"><i class="fa-solid fa-circle-xmark me-1"></i>Rejected</span>
+                                        {% endif %}
+                                    </td>
+                                    <td style="max-width: 300px; font-size: 0.85rem;" class="text-muted">{{ log.bot_response }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-muted">No price negotiation logs are registered yet.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

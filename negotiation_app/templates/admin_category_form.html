@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Category - Admin Console{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        
+        <!-- Sidebar Navigation -->
+        <div class="col-md-2 p-0 admin-sidebar rounded-4 overflow-hidden mb-4 mb-md-0">
+            <div class="py-3 px-4 border-bottom border-secondary">
+                <span class="fw-bold text-info"><i class="fa-solid fa-lock-open me-2"></i>Admin Console</span>
+            </div>
+            <a href="{% url 'admin_dashboard' %}"><i class="fa-solid fa-box me-2"></i>Products</a>
+            <a href="{% url 'admin_categories' %}" class="active"><i class="fa-solid fa-list me-2"></i>Categories</a>
+            <a href="{% url 'admin_orders' %}"><i class="fa-solid fa-receipt me-2"></i>Orders</a>
+            <a href="{% url 'admin_negotiations' %}"><i class="fa-solid fa-comments-dollar me-2"></i>Negotiations</a>
+        </div>
+        
+        <!-- Form Content -->
+        <div class="col-md-10 px-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 mt-2">
+                <h3 class="fw-bold text-dark mb-4">{{ action }} Category</h3>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-semibold text-secondary">Category Name</label>
+                        <input type="text" name="name" id="name" class="form-control rounded-3" value="{{ category.name|default:'' }}" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label fw-semibold text-secondary">Description</label>
+                        <textarea name="description" id="description" class="form-control rounded-3" rows="4">{{ category.description|default:'' }}</textarea>
+                    </div>
+                    
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-success rounded-pill px-4 fw-semibold">Save Category</button>
+                        <a href="{% url 'admin_categories' %}" class="btn btn-outline-secondary rounded-pill px-4">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,148 @@
+/* Custom styles for the Price Negotiation System */
+
+:root {
+    --primary-color: #4a6fdc;
+    --primary-dark: #3553b6;
+    --accent-color: #2ec4b6;
+    --bg-light: #f8f9fa;
+    --chat-bg: #e9ecef;
+    --chat-user-bg: #4a6fdc;
+    --chat-bot-bg: #f1f3f5;
+    --chat-user-text: #ffffff;
+    --chat-bot-text: #212529;
+}
+
+body {
+    background-color: #f5f6fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content {
+    flex: 1;
+}
+
+/* Card customizations */
+.product-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.product-card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.badge-offer {
+    background-color: #e63946;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.badge-negotiable {
+    background-color: #2ec4b6;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Chatbot Interface Styling */
+.chat-container {
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    height: 480px;
+    overflow: hidden;
+}
+
+.chat-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: #ffffff;
+    padding: 15px 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #fdfdfd;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.message {
+    max-width: 80%;
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.message.bot {
+    align-self: flex-start;
+    background-color: var(--chat-bot-bg);
+    color: var(--chat-bot-text);
+    border-bottom-left-radius: 4px;
+}
+
+.message.user {
+    align-self: flex-end;
+    background-color: var(--chat-user-bg);
+    color: var(--chat-user-text);
+    border-bottom-right-radius: 4px;
+}
+
+.chat-input-area {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Custom Admin panel styling */
+.admin-sidebar {
+    background-color: #1e293b;
+    color: #f8fafc;
+    min-height: calc(100vh - 56px);
+}
+
+.admin-sidebar a {
+    color: #cbd5e1;
+    text-decoration: none;
+    padding: 12px 20px;
+    display: block;
+    transition: all 0.2s ease;
+}
+
+.admin-sidebar a:hover, .admin-sidebar a.active {
+    background-color: #334155;
+    color: #ffffff;
+}
+
+.stat-card {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Footer styling */
+footer {
+    background-color: #1e293b;
+    color: #94a3b8;
+}

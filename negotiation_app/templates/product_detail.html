@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} - NegotioCart{% endblock %}
+
+{% block content %}
+<div class="container animate-fade-in">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-info text-decoration-none">Shop</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'home' %}?category={{ product.category.id }}" class="text-info text-decoration-none">{{ product.category.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        
+        <!-- Product Details Panel -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                <img src="{{ product.image_url }}" class="img-fluid" style="width: 100%; height: 350px; object-fit: cover;" alt="{{ product.name }}">
+                
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        {% if product.is_offer %}
+                            <span class="badge badge-offer rounded-pill px-3 py-2 shadow-sm"><i class="fa-solid fa-tags me-1"></i>PROMO OFFER</span>
+                        {% else %}
+                            <span class="badge badge-negotiable rounded-pill px-3 py-2 shadow-sm"><i class="fa-solid fa-comments me-1"></i>NEGOTIABLE PRODUCT</span>
+                        {% endif %}
+                    </div>
+                    
+                    <h2 class="fw-bold text-dark mb-2">{{ product.name }}</h2>
+                    <h5 class="text-info fw-semibold mb-3">{{ product.category.name }}</h5>
+                    <hr class="text-secondary">
+                    
+                    <p class="text-muted mb-4" style="line-height: 1.6;">
+                        {{ product.description }}
+                    </p>
+                    
+                    <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded-3 mb-4 border">
+                        <div>
+                            <span class="text-muted d-block" style="font-size: 0.85rem;">Standard Retail Price</span>
+                            <span class="fs-2 fw-bold text-dark">${{ product.price }}</span>
+                        </div>
+                        
+                        <div id="negotiated-price-info" class="text-end {% if not negotiated_price %}d-none{% endif %}">
+                            <span class="badge bg-success rounded-pill mb-1">Your Negotiated Price</span>
+                            <span class="fs-2 fw-bold text-success d-block" id="negotiated-price-display">
+                                {% if negotiated_price %}${{ negotiated_price|floatformat:2 }}{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <a href="{% url 'cart_add' product.id %}" id="add-to-cart-btn" class="btn btn-info text-white w-100 rounded-pill py-2 fw-semibold">
+                                <i class="fa-solid fa-cart-plus me-2"></i>Add to Cart
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{% url 'cart_add' product.id %}?buy_now=true" id="buy-now-btn" class="btn btn-dark w-100 rounded-pill py-2 fw-semibold">
+                                <i class="fa-solid fa-bolt me-2"></i>Buy Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chatbot Negotiator Panel -->
+        <div class="col-md-6">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="position-relative">
+                        <i class="fa-solid fa-robot fs-4 text-info bg-light p-2 rounded-circle shadow-sm"></i>
+                        <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-light rounded-circle"></span>
+                    </div>
+                    <div>
+                        <h6 class="mb-0 fw-bold">Price Negotiator Bot</h6>
+                        <small style="font-size: 0.75rem; color: #b7c4cf;">Online | Powered by AI</small>
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chat-messages">
+                    <!-- Default Bot greeting -->
+                    <div class="message bot">
+                        Hello! I am your sales assistant bot. 🤖
+                        <br>
+                        {% if product.is_offer %}
+                            The product <strong>{{ product.name }}</strong> is currently on a special promotional discount, so the price of <strong>${{ product.price }}</strong> is fixed. I cannot negotiate on this item.
+                        {% else %}
+                            I see you're interested in the <strong>{{ product.name }}</strong> (regular price: <strong>${{ product.price }}</strong>).
+                            <br><br>
+                            If you'd like to negotiate the price, go ahead and enter your offer below! Let's make a deal.
+                        {% endif %}
+                    </div>
+                    
+                    {% if negotiated_price %}
+                        <div class="message bot">
+                            We already agreed on a negotiated price of <strong>${{ negotiated_price|floatformat:2 }}</strong>. You can buy it at this price or submit another offer.
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="chat-input-area">
+                    {% if not user.is_authenticated %}
+                        <div class="text-center py-2">
+                            <span class="text-muted small d-block mb-2">You must login to interact with the negotiator.</span>
+                            <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-outline-info btn-sm px-4 rounded-pill">Login Now</a>
+                        </div>
+                    {% elif product.is_offer %}
+                        <div class="text-center py-2 text-danger small">
+                            <i class="fa-solid fa-lock me-1"></i> Negotiation is disabled for promo products.
+                        </div>
+                    {% else %}
+                        <div class="input-group">
+                            <span class="input-group-text bg-white rounded-start-pill text-muted fw-semibold">$</span>
+                            <input type="number" id="user-offer" class="form-control border-start-0" placeholder="Enter your price offer..." min="1" step="0.01">
+                            <button class="btn btn-info text-white rounded-end-pill px-4 fw-semibold" type="button" id="send-btn" onclick="sendOffer()">
+                                Offer Price
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Embed product variables into javascript context
+    const productId = "{{ product.id }}";
+    const negotiateUrl = "{% url 'negotiate_price' product.id %}";
+    const csrfToken = "{{ csrf_token }}";
+</script>
+<script src="{% load static %}{% static 'js/chatbot.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,41 @@
+# Django Git Ignore Rules
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Database files (local development fallback databases)
+*.sqlite3
+*.sqlite3-journal
+
+# Local Environment Variables and Secret files
+.env
+.env.local
+local_settings.py
+secrets.json
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+active_env/
+
+# IDE / Editor configurations
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Media files / Customer uploads (stored in production cloud services)
+media/
+staticfiles/
+
+# Logs and temporary files
+*.log
+temp/
+tmp/
