@@ -188,10 +188,19 @@ def main():
         print("  python setup_db.py --password YOUR_MYSQL_PASSWORD")
         print("="*80 + "\n")
 
-    # 3. Run Migrations
+    # 3. Run Migrations and setup Django
     print("\n--- Running Migrations ---")
-    os.system("python manage.py makemigrations negotiation_app")
-    os.system("python manage.py migrate")
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'PriceNegotiationSystem.settings')
+    import django
+    django.setup()
+    
+    from django.core.management import call_command
+    try:
+        call_command("makemigrations", "negotiation_app", interactive=False)
+        call_command("migrate", interactive=False)
+    except Exception as e:
+        print(f"Error applying migrations: {e}")
+        raise e
 
     # 4. Seed database
     seed_data()
