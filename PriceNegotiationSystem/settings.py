@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-f(+(y423h#rs77u^i*c+0%926n^uf*+62kx)=t2765x-*0n5d_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "price-negotiation-system-using-chatbot.onrender.com",
+]
 
 
 # Application definition
