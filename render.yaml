@@ -3,8 +3,8 @@ services:
   - type: web
     name: price-negotiation-chatbot
     runtime: python
-    # Command to install packages and compile static files
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+    # Command to install packages, compile static files, and initialize database schema
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate && python setup_db.py"
     # Command to run database setup (migration/seeding) and run production server using gunicorn
     startCommand: "python setup_db.py && gunicorn PriceNegotiationSystem.wsgi:application --config gunicorn.conf.py"
     envVars:

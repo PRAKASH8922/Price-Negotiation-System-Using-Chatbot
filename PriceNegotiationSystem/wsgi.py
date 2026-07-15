@@ -45,7 +45,7 @@ try:
         if root_dir not in sys.path:
             sys.path.append(root_dir)
         import setup_db
-        setup_db.main()
+        setup_db.main([])
         print("Startup database check completed successfully.")
         
         # Remove lock file

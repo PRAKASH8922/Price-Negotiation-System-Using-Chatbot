@@ -147,10 +147,10 @@ def seed_data():
 
     print("\nDatabase seeded successfully!")
 
-def main():
+def main(args_list=None):
     parser = argparse.ArgumentParser(description="Configure MySQL and seed data for Price Negotiation System.")
     parser.add_argument('--password', type=str, default=None, help="MySQL root password")
-    args = parser.parse_args()
+    args = parser.parse_args(args_list)
 
     using_mysql = False
     print("Checking connection to MySQL local server...")
