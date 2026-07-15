@@ -1,0 +1,30 @@
+# Render Blueprint Specification for Django Application
+services:
+  - type: web
+    name: price-negotiation-chatbot
+    runtime: python
+    # Command to install packages, compile static files, and initialize database schema
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate && python setup_db.py"
+    # Command to run production server using gunicorn
+    startCommand: "gunicorn PriceNegotiationSystem.wsgi:application --config gunicorn.conf.py"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.11
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "*"
+      - key: SECRET_KEY
+        generateValue: true
+      # By default it will fallback to SQLite. If they connect a MySQL database later,
+      # they can simply add the environment variables below:
+      # - key: DB_NAME
+      #   value: price_negotiation_db
+      # - key: DB_USER
+      #   value: root
+      # - key: DB_PASSWORD
+      #   value: your_mysql_password
+      # - key: DB_HOST
+      #   value: your_mysql_host
+      # - key: DB_PORT
+      #   value: "3306"
