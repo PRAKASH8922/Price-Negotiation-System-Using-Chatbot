@@ -90,17 +90,31 @@ DATABASES = {
 
 # Dynamic Fallback: If MySQL is not reachable, fall back to SQLite for local development
 try:
-    import pymysql
-    # Attempt a quick connection to check if credentials/host are valid
-    conn = pymysql.connect(
-        host=DATABASES['default']['HOST'],
-        user=DATABASES['default']['USER'],
-        password=DATABASES['default']['PASSWORD'],
-        port=int(DATABASES['default']['PORT']),
-        connect_timeout=2
-    )
-    conn.close()
+    import socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(1)
+    s.connect((DATABASES['default']['HOST'], int(DATABASES['default']['PORT'])))
+    s.close()
+    port_open = True
 except Exception:
+    port_open = False
+
+if port_open:
+    try:
+        import pymysql
+        # Attempt a quick connection to check if credentials/host are valid
+        conn = pymysql.connect(
+            host=DATABASES['default']['HOST'],
+            user=DATABASES['default']['USER'],
+            password=DATABASES['default']['PASSWORD'],
+            port=int(DATABASES['default']['PORT']),
+            connect_timeout=2
+        )
+        conn.close()
+    except Exception:
+        port_open = False
+
+if not port_open:
     print("\n" + "="*80)
     print("WARNING: Local MySQL connection failed. Falling back to SQLite database for development.")
     print("To switch to MySQL, make sure the service is running and update credentials in settings.py")

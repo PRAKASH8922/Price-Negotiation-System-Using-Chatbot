@@ -154,7 +154,22 @@ def main():
 
     using_mysql = False
     print("Checking connection to MySQL local server...")
-    conn, password = find_working_connection(override_pwd=args.password)
+    
+    # Quick socket check to see if port 3306 is open before trying database connections
+    import socket
+    port_open = False
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(1)
+        s.connect(('127.0.0.1', 3306))
+        s.close()
+        port_open = True
+    except Exception:
+        pass
+
+    conn, password = None, None
+    if port_open or args.password is not None:
+        conn, password = find_working_connection(override_pwd=args.password)
     
     if conn:
         # 1. Create database
